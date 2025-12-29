@@ -76,20 +76,32 @@ def month_year(num):
                 month = month
             year = random.randint(26 ,33)
             return f"{month}|20{year}"
+    else:
+        month = random.randint(1 ,12)
+        if 0 < month < 10:
+            month = f"0{month}"
+        year = random.randint(26 ,33)
+        return f"{month}|20{year}"
 def cvv(num):
-    cvv = num.split("|")[3]
-    if cvv.startswith(tuple("0123456789")):
-        return cvv
-    elif cvv =="xxx":
-        cvc = ""
+    cvv = num.split("|")
+    if len(cvv) == 4:
+        if cvv.startswith(tuple("0123456789")):
+            return cvv
+        elif cvv =="xxx":
+            cvc = ""
+            for _ in range(3):
+                cvc += shufling()
+            return cvc
+        elif cvv =="xxxx":
+            cvc = ""
+            for _ in range(4):
+                cvc += shufling()
+            return cvc
+    else:
+        cvv = ""
         for _ in range(3):
-            cvc += shufling()
-        return cvc
-    elif cvv =="xxxx":
-        cvc = ""
-        for _ in range(4):
-            cvc += shufling()
-        return cvc
+            cvv += shufling()
+        return cvv
 def randomizing(number):
     amount = input("how many cards >> ")
     if type(number) == list:
