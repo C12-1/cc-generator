@@ -41,6 +41,7 @@ python script_name.py
 ```
 [+] write the path of the file (txt) 
 [+] write the bin ex:456654|xx|xx|xxx >> 456789|05|30|123
+[+] or use the all_test_inputs above
 ```
 
 **Format**: `BIN|MM|YY|CVV`
