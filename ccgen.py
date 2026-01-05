@@ -11,40 +11,52 @@ def checking():
 ██║     ██║███╗██║   ██║   ██╔══╝  ██║    ╚██╗ ██╔╝██╔══╝  
 ╚██████╗╚███╔███╔╝   ██║   ███████╗███████╗╚████╔╝ ███████╗
  ╚═════╝ ╚══╝╚══╝    ╚═╝   ╚══════╝╚══════╝ ╚═══╝  ╚══════╝\n\t\t\t\t\033[31m MADE BY : @C12\n \033[0m""")
-    bin_input = input("[+] write the path of the file (txt) \n[+] write the bin ex:456654|xx|xx|xxx >> ").strip()
+    bin_input = input("[+] write the path of the file (txt) \n[+] write the bin ex:456654|xx|xx|xxx , 456654 >> ").strip()
     try :
         
-        if os.path.exists("cc.txt") and os.path.isfile(bin_input):
+        if os.path.exists(bin_input) and os.path.isfile(bin_input):
             with open(bin_input , "r") as bins:
                 bin = bins.readlines()
                 cleaned_bins = [line.strip() for line in bin if line.strip()]
                 
                 return cleaned_bins
-        elif bin_input.split("|")[0].isdigit() :
+        elif bin_input.split("|")[0].isdecimal() :
             first_num = bin_input.split("|")[0]
             if 6 <= len(first_num) <= 12:
                 return  bin_input
             else:
-                return "Invalid bin: must be 6-12 digits and even length"
+                print("\033[31mInvalid bin: must be 6-12 digits and even length")
+                return False
         else:
-            return "Invalid input: must be a file path or a numeric bin"
+            print("\033[31mInvalid input: must be a file path or a numeric bin")
+            return False
+            
     except Exception as e:
-        return f"the problem of {e}"
+        print( f"\033[31m  the problem of {e}")
+        return False
+
 def shufling():
     num_list = sdigits
     choice = random.choice(num_list)
     return choice
 def firts_num(num):
-    the_num = num.split("|")[0]
-    
-    if 0 < len(the_num) <= 16:
-        length = 16 - len(the_num)
-        for _ in range(length+1):
-            the_num += shufling()
-            if len(str(the_num)) == 16 :
-                return the_num
+    the_num = num.split("|")
+    if 1 <= len(the_num) <= 4 and   int(the_num[0]):
+        cnum = the_num[0]
+        if 6 <= len(cnum) < 16:
+            xlen = 16 - len(cnum)
+            for _ in range(xlen):
+                cnum += shufling()
+                if len(cnum) == 16:
+                    return cnum
+        elif len(cnum) == 16:
+            return cnum
+        elif len(cnum) > 16:
+            
+            return False
     else:
-        print(f"[-] the number <<< {num} >>> doesnt much (<0 or >16)")
+        print("none")
+        
 def month_year(num):
     full = num.split("|")
     if len(full) == 4:
@@ -85,14 +97,14 @@ def month_year(num):
 def cvv(num):
     cvv = num.split("|")
     if len(cvv) == 4:
-        if cvv.startswith(tuple("0123456789")):
-            return cvv
-        elif cvv =="xxx":
+        if cvv[3].startswith(tuple("0123456789")):
+            return cvv[3]
+        elif cvv[3] =="xxx":
             cvc = ""
             for _ in range(3):
                 cvc += shufling()
             return cvc
-        elif cvv =="xxxx":
+        elif cvv[3] =="xxxx":
             cvc = ""
             for _ in range(4):
                 cvc += shufling()
@@ -102,25 +114,46 @@ def cvv(num):
         for _ in range(3):
             cvv += shufling()
         return cvv
-def randomizing(number):
-    amount = input("how many cards >> ")
-    if type(number) == list:
+def generating(number):
+    if number:
+        amount = input("how many cards >> ")
+        # if type(number == list) and "Invalid input" in number:
+        #     for _ in range(number):
+        #         if 
+        #     print(f"write a nemuric bin not {number}")    
         
-        with open(f"{datetime.now().strftime("%Y-%m-%d %H-%M-%S")} CCs.txt" , "w") as file:
-            for card in range(len(number)):
-                format = f"{firts_num(number[card])}|{month_year(number[card])}|{cvv(number[card])}\n"
+        if type(number) == list:
+            
+            with open(f"{datetime.now().strftime("%Y-%m-%d %H-%M-%S")} CCs.txt" , "w") as file:
+                for card in range(len(number)):
+                    for _ in range(int(amount)):
+                            format = f"{firts_num(number[card])}|{month_year(number[card])}|{cvv(number[card])}\n"
+                            if not firts_num(number[card]):
+                                print("\033[31mbin length is out of range(6-16)")
+                                break
+                            file.write(format)
+                            print(f"\033[34m {format.strip()}")
+        elif int(amount):
+            with open(f"{datetime.now().strftime("%Y-%m-%d %H-%M-%S")} CCs.txt" , "w") as file:
                 for _ in range(int(amount)):
-
-                        file.write(format)
-                        print(f"\033[34m {format.strip()}")
+                    format = f"{firts_num(number)}|{month_year(number)}|{cvv(number)}\n"
+                    file.write(format)
+                    print(f"\033[34m {format.strip()}")
     else:
-        with open(f"{datetime.now().strftime("%Y-%m-%d %H-%M-%S")} CCs.txt" , "w") as file:
-            for _ in range(int(amount)):
-                format = f"{firts_num(number)}|{month_year(number)}|{cvv(number)}\n"
-                file.write(format)
-                print(f"\033[34m {format.strip()}")
+        print("\033[31mwrong input")
+    
+    
+        
    
+def keep_going():
+    while True:
+        answer = input("to keep generating 'yes' || to exit 'no' >> ").upper()
+        if answer == "yes":
+            generating(checking())
+        elif answer == "no":
+            break
+        else:
+            print("write yes or no")
 
-
-
-randomizing(checking())
+if __name__ == "__main__":
+    generating(checking())

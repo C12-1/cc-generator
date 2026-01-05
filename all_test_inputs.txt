@@ -1,0 +1,422 @@
+# ============================================
+# TEST 1: DIRECT BIN INPUTS (VALID)
+# ============================================
+411111
+555555
+378282
+601100
+424242
+511111
+345678
+411111|xx|xx|xxx
+555555|05|2026|123
+378282|xx|2027|xxx
+411111|12|2028|456
+601100|xx|xx|xxxx
+555555|xx|xx|xxx
+378282|09|2030|789
+4111111111111111
+5555555555554444
+378282246310005
+411111|xx|2029|xxx
+555555|08|xx|123
+411111|xx|xx|123
+555555|05|2026|xxxx
+4111111111111111|xx|xx|xxx
+
+# ============================================
+# TEST 2: DIRECT BIN INPUTS (INVALID)
+# ============================================
+123
+12345
+1234567890123456789
+abcdef
+ABCDEF
+411111|13|2025|xxx
+411111|00|2025|xxx
+411111|05|2020|xxx
+411111|xx|20|xxx
+411111|xx|2035|xxx
+411111|||
+411111|xx|xx
+411111|xx|xx|xxx|extra
+123abc
+41 1111
+41-1111
+""
+"   "
+.
+,
+|
+xx|xx|xx|xxx
+123|456|789
+411111|xx|xx|xx
+555555|05|26|123
+
+# ============================================
+# TEST 3: FILE NAMES TO TEST
+# ============================================
+test1_simple.txt
+test2_patterns.txt
+test3_mixed.txt
+test4_edge.txt
+test5_invalid.txt
+test6_empty.txt
+bins.txt
+cards.txt
+data.txt
+input.txt
+test.txt
+file.txt
+./test1_simple.txt
+../test1_simple.txt
+C:\Users\moi\Desktop\test1_simple.txt
+/home/user/test1_simple.txt
+test file.txt
+test-file.txt
+test_file.txt
+
+# ============================================
+# TEST 4: FILE CONTENT EXAMPLES
+# Create separate files with these contents
+# ============================================
+
+# FILE: test1_simple.txt
+411111
+555555
+378282
+601100
+424242
+511111
+
+# FILE: test2_patterns.txt
+411111|xx|xx|xxx
+555555|05|2026|123
+378282|xx|2027|xxx
+601100|08|2029|456
+424242|xx|xx|xxxx
+
+# FILE: test3_mixed.txt
+411111
+555555|xx|2028|xxx
+378282|12|xx|999
+601100
+424242|xx|xx|xxxx
+5111111111111118|xx|xx|xxx
+
+# FILE: test4_edge.txt
+4111111111111111
+1234567890123456
+411111
+5555555555554444
+378282246310005
+6011001234567890
+
+# FILE: test5_invalid.txt
+12345
+abcdef
+411111|13|2025|xxx
+411111|00|2025|xxx
+# Comment line
+
+Empty line above
+411111|xx|20|xxx
+1234567890123456789
+
+# FILE: test6_empty.txt
+(completely empty)
+
+# FILE: test7_whitespace.txt
+   
+411111   
+   
+555555|xx|xx|xxx   
+   
+   
+   
+   
+   
+   
+   
+   
+
+# FILE: test8_comments.txt
+# This is a comment file
+# With multiple comments
+# And no actual BINs
+# Just testing
+# Empty lines below
+
+
+# End of file
+
+# FILE: test9_single.txt
+411111
+
+# FILE: test10_16digit_full.txt
+4111111111111111|xx|xx|xxx
+5555555555554444|05|2026|123
+378282246310005|xx|2030|xxxx
+6011001234567890|08|2029|456
+
+# ============================================
+# TEST 5: CARD QUANTITY INPUTS
+# ============================================
+1
+10
+100
+1000
+5000
+50
+25
+5
+3
+7
+15
+20
+30
+99
+250
+10000
+
+# ============================================
+# TEST 6: INVALID QUANTITY INPUTS
+# ============================================
+0
+-1
+-5
+abc
+1.5
+2.3
+1000000000000
+999999999999
+""
+"   "
+none
+zero
+one
+five
+10.0
+10.5
+-10
+-100
+
+# ============================================
+# TEST 7: KEEP GOING PROMPT INPUTS
+# ============================================
+yes
+YES
+Yes
+y
+Y
+no
+NO
+No
+n
+N
+maybe
+exit
+quit
+stop
+continue
+yep
+nope
+
+# ============================================
+# TEST 8: SPECIAL CHARACTER INPUTS
+# ============================================
+411111|xx|xx|xxx|extra
+411111|||
+411111|xx|
+411111|xx
+411111|
+|xx|xx|xxx
+xx|xx|xxx
+;411111
+'411111'
+"411111"
+`411111`
+(411111)
+[411111]
+{411111}
+411111&
+411111@
+411111#
+411111$
+411111%
+411111^
+411111*
+411111(
+411111)
+411111_
+411111+
+411111=
+411111{
+411111}
+411111[
+411111]
+411111|
+411111\
+411111/
+411111:
+411111;
+411111"
+411111'
+411111<
+411111>
+411111,
+411111.
+411111?
+411111!
+
+# ============================================
+# TEST 9: FORMAT VARIATIONS
+# ============================================
+411111|1|2026|123
+411111|01|2026|123
+411111|9|2026|123
+411111|09|2026|123
+411111|12|26|123
+411111|12|2026|123
+411111|xx|26|xxx
+411111|xx|2026|xxx
+411111|xx|xx|123
+411111|05|xx|123
+411111|05|2026|xxx
+4111111111111111|xx|xx|123
+4111111111111111|05|2026|xxx
+4111111111111111|05|2026|1234
+
+# ============================================
+# TEST 10: REAL TEST CARDS (Sandbox/Test)
+# ============================================
+4242424242424242
+4000000000000002
+4000000000009995
+4000000000009987
+4000000000009979
+4000000000000069
+4000000000000127
+4000000000000001
+4000000760000002
+4000000400000008
+5555555555554444
+378282246310005
+371449635398431
+6011111111111117
+3566002020360505
+6200000000000005
+4111111111111111
+4012888888881881
+
+# ============================================
+# TEST 11: EMPTY/NULL INPUTS
+# ============================================
+
+(just press Enter)
+   
+        
+       
+        
+(nothing, just spaces)
+\t\t\t
+\n\n\n
+
+# ============================================
+# TEST 12: LONG INPUTS
+# ============================================
+123456789012
+1234567890123
+12345678901234
+123456789012345
+1234567890123456
+12345678901234567
+123456789012345678
+41111111111111111111
+55555555555555555555
+
+# ============================================
+# TEST 13: MIXED VALIDITY TESTS
+# ============================================
+411111|xx|xx|xxx  # valid
+555555|13|2025|xxx  # invalid month
+378282|xx|20|xxx  # invalid year format
+601100|xx|xx|xx  # invalid cvv length
+424242|05|2026|12345  # invalid cvv length
+511111|xx|xx|  # missing cvv
+345678||2026|123  # empty month
+411111|05||123  # empty year
+|xx|xx|xxx  # empty bin
+xx|xx|xxx  # no bin
+
+# ============================================
+# TEST 14: PATH MANIPULATION ATTEMPTS
+# ============================================
+../../etc/passwd
+C:\Windows\System32\config\SAM
+/etc/passwd
+file:///etc/passwd
+http://malicious.com/file.txt
+\\192.168.1.1\share\file.txt
+<script>alert('xss')</script>
+'; DROP TABLE users; --
+" OR "1"="1
+../run_me.exe
+C:\autoexec.bat
+
+# ============================================
+# TEST 15: UNICODE/INTERNATIONAL INPUTS
+# ============================================
+４１１１１１  (full-width numbers)
+四一一一一一  (chinese numbers)
+４１１１１１｜ｘｘ｜ｘｘ｜ｘｘｘ  (full-width)
+١٢٣٤٥٦  (arabic numbers)
+๔๑๑๑๑๑  (thai numbers)
+𝟜𝟙𝟙𝟙𝟙𝟙  (mathematical bold)
+🄄🄂🄂🄂🄂🄂  (enclosed numbers)
+⒋⒈⒈⒈⒈⒈  (parenthesized numbers)
+411111🎲
+411111🔢
+411111📇
+
+# ============================================
+# TEST 16: FILE EXTENSION VARIATIONS
+# ============================================
+bins
+bins.TXT
+bins.Txt
+bins.text
+bins.csv
+bins.json
+bins.xml
+bins.dat
+bins.log
+bins.bin
+bins.exe
+bins.bat
+bins.cmd
+bins.sh
+bins.py
+bins.js
+bins.html
+bins.php
+bins.asp
+bins.aspx
+bins.jsp
+bins.config
+bins.ini
+bins.yaml
+bins.yml
+bins.conf
+bins.setting
+
+# ============================================
+# TEST 17: CASE SENSITIVITY
+# ============================================
+XX|XX|XXX
+Xx|Xx|XxX
+xX|xX|xXx
+XX|XX|XXXX
+XX|2026|XXX
+05|XX|123
+XX|26|XXX
