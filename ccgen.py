@@ -4,13 +4,14 @@ from string import digits as sdigits
 from datetime import datetime
 import colorama
 colorama.init()
-def checking():
-    print("""\n\n \033[34m██████╗██╗    ██╗████████╗███████╗██╗    ██╗   ██╗███████╗
+print("""\n\n \033[34m██████╗██╗    ██╗████████╗███████╗██╗    ██╗   ██╗███████╗
 ██╔════╝██║    ██║╚══██╔══╝██╔════╝██║    ██║   ██║██╔════╝
 ██║     ██║ █╗ ██║   ██║   █████╗  ██║    ██║   ██║█████╗  
 ██║     ██║███╗██║   ██║   ██╔══╝  ██║    ╚██╗ ██╔╝██╔══╝  
 ╚██████╗╚███╔███╔╝   ██║   ███████╗███████╗╚████╔╝ ███████╗
  ╚═════╝ ╚══╝╚══╝    ╚═╝   ╚══════╝╚══════╝ ╚═══╝  ╚══════╝\n\t\t\t\t\033[31m MADE BY : @C12\n \033[0m""")
+def checking():
+    
     bin_input = input("[+] write the path of the file (txt) \n[+] write the bin ex:456654|xx|xx|xxx , 456654 >> ").strip()
     try :
         
@@ -70,10 +71,18 @@ def month_year(num):
                 year = full[2]
                 if 0 < month < 10:
                     month = "0" + str(month)
+                    if len(year) == 4:
 
-                    return f"{month}|20{year}"
+                        return f"{month}|{year}"
+                    else:
+                        return f"{month}|20{year}"
                 else: 
-                    return f"{month}|20{year}"
+                    if len(year) == 4:
+
+                        return f"{month}|{year}"
+                    else:
+                        return f"{month}|20{year}"
+                    
         elif full[2] == "xx" and full[1].startswith(tuple('0123456789')):
             year = random.randint(26 ,33)
             month = full[1]
@@ -116,29 +125,30 @@ def cvv(num):
         return cvv
 def generating(number):
     if number:
-        amount = input("how many cards >> ")
-        # if type(number == list) and "Invalid input" in number:
-        #     for _ in range(number):
-        #         if 
-        #     print(f"write a nemuric bin not {number}")    
+        amount = input("how many cards default 10 >> ")
         
-        if type(number) == list:
-            
-            with open(f"{datetime.now().strftime("%Y-%m-%d %H-%M-%S")} CCs.txt" , "w") as file:
-                for card in range(len(number)):
+        def excuting():
+            if type(number) == list:
+                
+                with open(f"{datetime.now().strftime("%Y-%m-%d %H-%M-%S")} CCs.txt" , "w") as file:
+                    for card in range(len(number)):
+                        for _ in range(int(amount)):
+                                format = f"{firts_num(number[card])}|{month_year(number[card])}|{cvv(number[card])}\n"
+                                if not firts_num(number[card]):
+                                    print(f"\033[31mbin length is out of range(6-16) : {number[card]}")
+                                    continue
+                                file.write(format)
+                                print(f"\033[34m {format.strip()}")
+            elif int(amount):
+                with open(f"{datetime.now().strftime("%Y-%m-%d %H-%M-%S")} CCs.txt" , "w") as file:
                     for _ in range(int(amount)):
-                            format = f"{firts_num(number[card])}|{month_year(number[card])}|{cvv(number[card])}\n"
-                            if not firts_num(number[card]):
-                                print("\033[31mbin length is out of range(6-16)")
-                                break
-                            file.write(format)
-                            print(f"\033[34m {format.strip()}")
-        elif int(amount):
-            with open(f"{datetime.now().strftime("%Y-%m-%d %H-%M-%S")} CCs.txt" , "w") as file:
-                for _ in range(int(amount)):
-                    format = f"{firts_num(number)}|{month_year(number)}|{cvv(number)}\n"
-                    file.write(format)
-                    print(f"\033[34m {format.strip()}")
+                        format = f"{firts_num(number)}|{month_year(number)}|{cvv(number)}\n"
+                        file.write(format)
+                        print(f"\033[34m {format.strip()}")
+        if amount.startswith(tuple("0123456789")):
+            excuting()
+        else:
+            print("\033[31mwrite a correct number")
     else:
         print("\033[31mwrong input")
     
@@ -146,14 +156,16 @@ def generating(number):
         
    
 def keep_going():
+    generating(checking())
     while True:
         answer = input("to keep generating 'yes' || to exit 'no' >> ").upper()
-        if answer == "yes":
+        if answer == "YES":
             generating(checking())
-        elif answer == "no":
+        elif answer == "NO":
+            print("\033[33mthank you for using our script :)")
             break
         else:
             print("write yes or no")
 
 if __name__ == "__main__":
-    generating(checking())
+    keep_going()
