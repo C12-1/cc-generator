@@ -1,42 +1,83 @@
+# libraries
 import random 
 import os
 from string import digits as sdigits
 from datetime import datetime
 import colorama
 colorama.init()
-print("""\n\n \033[34m██████╗██╗    ██╗████████╗███████╗██╗    ██╗   ██╗███████╗
+
+# constants
+DIGITS_TUBLE = tuple('0123456789')
+CURRENT_YEAR = datetime.now().year
+LEGAL_YEAR = CURRENT_YEAR + 8
+RED = "\033[31m"
+UNWANTED_INPUTS = ""
+# the logo of the author
+print(f"""\n\n \033[34m██████╗██╗    ██╗████████╗███████╗██╗    ██╗   ██╗███████╗
 ██╔════╝██║    ██║╚══██╔══╝██╔════╝██║    ██║   ██║██╔════╝
 ██║     ██║ █╗ ██║   ██║   █████╗  ██║    ██║   ██║█████╗  
 ██║     ██║███╗██║   ██║   ██╔══╝  ██║    ╚██╗ ██╔╝██╔══╝  
 ╚██████╗╚███╔███╔╝   ██║   ███████╗███████╗╚████╔╝ ███████╗
- ╚═════╝ ╚══╝╚══╝    ╚═╝   ╚══════╝╚══════╝ ╚═══╝  ╚══════╝\n\t\t\t\t\033[31m MADE BY : @C12\n \033[0m""")
+ ╚═════╝ ╚══╝╚══╝    ╚═╝   ╚══════╝╚══════╝ ╚═══╝  ╚══════╝\n\t\t\t\t{RED} MADE BY : @C12\n \033[0m""")
+
+# the function of taking the ipute and check the type of it and return it 
 def checking():
+    bin_input = input(f"{RED}[+] write the path of the file (txt) \n[+] write the bin ex:456654|xx|xx|xxx , 456654 >> ").strip()
+
+    # check if the bin is empty
+    if not bin_input :
+        print(f"{RED}🔻 The input is empty")
+        return False
+    
+    # file path handling
+    if os.path.exists(bin_input) and os.path.isfile(bin_input):
+        with open(bin_input , "r") as bin_file:
+            bin_list = bin_file.readlines()
+            cleaned_bin_list = []
+            for line in bin_list:  #loop to check if the card number is only digits
+                bin_part = line.split("|")[0].strip()
+                if bin_part.isdigit():
+                    cleaned_bin_list.append(line)
+                else:
+                    UNWANTED_INPUTS += line + "\n"
+            if not bin_list:
+                print(f"{RED}🔻 No bins were found inside the file")
+                return False
+            return cleaned_bin_list
+    # single bin handling 
+    bin_parts = bin_input.split("|")
+    first_num = bin_parts[0]
     
 
-    bin_input = input("\033[31m[+] write the path of the file (txt) \n[+] write the bin ex:456654|xx|xx|xxx , 456654 >> ").strip()
-    try :
-        
-        if os.path.exists(bin_input) and os.path.isfile(bin_input):
-            with open(bin_input , "r") as bins:
-                bin = bins.readlines()
-                cleaned_bins = [line.strip() for line in bin if line.strip()]
-                
-                return cleaned_bins
-        elif bin_input.split("|")[0].isdecimal() :
-            first_num = bin_input.split("|")[0]
-            if 6 <= len(first_num) <= 12:
-                return  bin_input
-            else:
-                print("\033[31mInvalid bin: must be 6-12 digits and even length")
-                return False
-        else:
-            print("\033[31mInvalid input: must be a file path or a numeric bin")
-            return False
-            
-    except Exception as e:
-        print( f"\033[31m  the problem of {e}")
+    # first number handling 
+    if not first_num or not first_num.isdigit():
+        print(f"{RED}Invalid bin input : must contain only digits")
         return False
+    
+    elif not 6 <= len(first_num) <= 16 :
+        print(f"{RED}Invalid bin input : length must be around 6 and 16")
+        return False
+    
+    if len(bin_parts) > 1 : 
 
+        # month handling 
+        if len(bin_parts) >= 2 and bin_parts[1] != "" and bin_parts[1] != "xx" :
+            if not bin_parts[1].isdigit() or 1 > bin_parts[1] > 12:
+                print(f"{RED}Invalid month : must be 1-12 digits or xx")
+                return False
+
+        # year handling 
+        if len(bin_parts) >= 3 and bin_parts[2] not in ["" , "xx"]:
+            if not bin_parts[2].isdigit():
+                print(f"{RED}Invalid year : must be digits or xx")
+                return False
+
+        # cvv cvc handling 
+        if len(bin_parts) == 4 and bin_parts[3] not in ["" , "xx" ,"xxx" , "xxxx"]:
+            if not bin_parts[3].isdigit():
+                return False
+
+        
 def shufling():
     num_list = sdigits
     choice = random.choice(num_list)
@@ -66,12 +107,12 @@ def firts_num(num):
 def month_year(num):
     full = num.split("|")
     if len(full) == 4:
-        if full[1].startswith(tuple('0123456789')) and full[2].startswith(tuple('0123456789')):
+        if full[1].startswith(DIGITS_TUBLE) and full[2].startswith(DIGITS_TUBLE):
             month = full[1]
             year = full[2]
             if 0 < int(month) <= 12 :
                 return f"{month}|{year}"
-        elif full[1] == "xx" and full[2].startswith(tuple('0123456789')):
+        elif full[1] == "xx" and full[2].startswith(DIGITS_TUBLE):
                 month = random.randint(1 ,12)
                 year = full[2]
                 if 0 < month < 10:
@@ -88,7 +129,7 @@ def month_year(num):
                     else:
                         return f"{month}|20{year}"
                     
-        elif full[2] == "xx" and full[1].startswith(tuple('0123456789')):
+        elif full[2] == "xx" and full[1].startswith(DIGITS_TUBLE):
             year = random.randint(26 ,33)
             month = full[1]
             return f"{month}|20{year}"
@@ -154,7 +195,7 @@ def generating(number):
                         for _ in range(int(amount)):
                                 format = f"{firts_num(number[card])}|{month_year(number[card])}|{cvv(number[card])}\n"
                                 if not firts_num(number[card]):
-                                    print("\033[31Mbin length is out of range(6-16)")
+                                    print(f"{RED}bin length is out of range(6-16)")
                                 
                                     continue
                                 while not luhn_algo(format):
@@ -177,11 +218,11 @@ def generating(number):
         if amount.startswith(tuple("0123456789")):
             excuting()
         else:
-            print("\033[31mwrite a correct number")
+            print(f"{RED}write a correct number")
             return "Write a correct number"
             
     else:
-        print("\033[31mwrong input")
+        print(f"{RED}wrong input")
         return "Wrong input"
 
     
@@ -205,4 +246,7 @@ def keep_going():
                 print("Write yes or no")
 
 if __name__ == "__main__":
-    keep_going()
+    try : 
+        keep_going()
+    except KeyboardInterrupt:
+        print(f"{RED}\n\n🔴 Exiting...")
