@@ -12,6 +12,7 @@ CURRENT_YEAR = datetime.now().year
 LEGAL_YEAR = CURRENT_YEAR + 8
 RED = "\033[31m"
 UNWANTED_INPUTS = ""
+
 # the logo of the author
 print(f"""\n\n \033[34m██████╗██╗    ██╗████████╗███████╗██╗    ██╗   ██╗███████╗
 ██╔════╝██║    ██║╚══██╔══╝██╔════╝██║    ██║   ██║██╔════╝
@@ -47,7 +48,6 @@ def checking():
     # single bin handling 
     bin_parts = bin_input.split("|")
     first_num = bin_parts[0]
-    
 
     # first number handling 
     if not first_num or not first_num.isdigit():
@@ -77,33 +77,40 @@ def checking():
             if not bin_parts[3].isdigit():
                 return False
 
-        
+# the function to return random digits
 def shufling():
-    num_list = sdigits
-    choice = random.choice(num_list)
-    return choice
-def firts_num(num):
-    the_num = num.split("|")
-    try:
-        if 1 <= len(the_num) <= 4 and   int(the_num[0]):
-            cnum = the_num[0]
-            if 6 <= len(cnum) < 16:
-                xlen = 16 - len(cnum)
-                for _ in range(xlen):
-                    cnum += shufling()
-                    if len(cnum) == 16:
-                        return cnum
-            elif len(cnum) == 16:
-                return cnum
-            elif len(cnum) > 16:
-                
-                return False
-        else:
-            print("none")
-    except ValueError as e:
-        print( f"❗invalid bin number ~~ {num} ~~")
+    return random.choice(sdigits)
+
+# function to return the first card number 
+def firts_num(bin_number : str) -> str :
+    global UNWANTED_INPUTS
+    if not bin_number:
+        UNWANTED_INPUTS += bin_number + "\n"
         return False
-        
+    card_number = bin_number.split("|")[0]
+    if not card_number.isdigit() and not 6 <= len(card_number) <= 16 or not card_number.startswith(tuple("4563")):
+        UNWANTED_INPUTS += bin_number + "\n"
+        print(f"{RED}Invalid Bin : out of range or wrong must start with 5-4-6-3")
+        return False
+    if card_number.startswith(tuple("456")):
+        while len(card_number) < 15:
+            card_number += shufling()
+    elif card_number.startswith("3") : 
+        while len(card_number) < 14:
+            card_number += shufling()
+    # calculate checksum 
+    total = 0
+
+    for i , number in enumerate(card_number[::-1] , 1):
+        number = int(number)
+        if i % 2 == 1:
+            number *= 2
+            if number > 9:
+                number = (number % 10) + 1
+        total += number
+    checksum = (10 - (total % 10)) % 10
+
+    print( card_number + str(checksum))
 def month_year(num):
     full = num.split("|")
     if len(full) == 4:
@@ -183,62 +190,54 @@ def luhn_algo(number: str) -> bool:
         total += x
     return total % 10 == 0 
 
-def generating(number):
-    if number:
-        amount = input("How many cards default 10 >> ")
-        
-        def excuting():
-            if type(number) == list:
-                
-                with open(f"{datetime.now().strftime('%Y-%m-%d %H-%M-%S')} CCs.txt" , "w") as file:
-                    for card in range(len(number)):
-                        for _ in range(int(amount)):
-                                format = f"{firts_num(number[card])}|{month_year(number[card])}|{cvv(number[card])}\n"
-                                if not firts_num(number[card]):
-                                    print(f"{RED}bin length is out of range(6-16)")
-                                
-                                    continue
-                                while not luhn_algo(format):
-                                    format = f"{firts_num(number[card])}|{month_year(number[card])}|{cvv(number[card])}\n"
-                                   
-                                file.write(format)
-                                print(f"\033[34m {format.strip()}")
-            elif amount:
-                with open(f"{datetime.now().strftime('%Y-%m-%d %H-%M-%S')} CCs.txt" , "w") as file:
-                    for _ in range(int(amount)):
-                        format = f"{firts_num(number)}|{month_year(number)}|{cvv(number)}\n"
+# the main function
+def main(number):
+    filename = f"{datetime.now().strftime('%Y-%m-%d %H-%M-%S')} CCs.txt"
+    generated = 0
+    max_attempts = 50  # Prevent infinite loops
+    
+    if number :
+        amount = input("How many cards default 10 >> ").strip()
+        # default amount
+        if not amount.isdigit() or amount == "" or int(amount) < 10:
+            print(f"{RED}Wrong amount : write correct digit setting default 10")
+            amount = 10
+ 
+        amount = int(amount)
+        # handling with list 
+        with open(filename , "w") as file:
+            if type(number) == list :
+                valid_bins = [] 
+                bin_list = number
+                for bin in bin_list:
+                    card_number = firts_num(bin)
+                    if card_number and luhn_algo(card_number):
+                        return
+                    
 
-                        while not luhn_algo(format) :
-                            format = f"{firts_num(number)}|{month_year(number)}|{cvv(number)}\n"
-                            
-                        file.write(format)
-                        print(f"\033[34m {format.strip()}")
-                       
-                                
-        if amount.startswith(tuple("0123456789")):
-            excuting()
-        else:
-            print(f"{RED}write a correct number")
-            return "Write a correct number"
+
+                
+
+
             
-    else:
-        print(f"{RED}wrong input")
-        return "Wrong input"
+    else: 
+        return
+
 
     
     
         
    
 def keep_going():
-    func = generating(checking())
+    func = main(checking())
     if func == "write a correct number"  or func == "wrong input":
         while True:
-            func: None | str = generating(checking())
+            func: None | str = main(checking())
     else:
         while True:
             answer = input("To keep generating 'yes' || to exit 'no' >> ").upper()
             if answer == "YES":
-                generating(checking())
+                main(checking())
             elif answer == "NO":
                 print("\033[33m🔻Thank you for using our script :)")
                 break
@@ -247,6 +246,6 @@ def keep_going():
 
 if __name__ == "__main__":
     try : 
-        keep_going()
+        main(checking())
     except KeyboardInterrupt:
         print(f"{RED}\n\n🔴 Exiting...")
