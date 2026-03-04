@@ -23,6 +23,7 @@ print(f"""\n\n \033[34m██████╗██╗    ██╗████�
 
 # the function of taking the ipute and check the type of it and return it 
 def checking():
+    global UNWANTED_INPUTS
     bin_input = input(f"{RED}[+] write the path of the file (txt) \n[+] write the bin ex:456654|xx|xx|xxx , 456654 >> ").strip()
 
     # check if the bin is empty
@@ -51,7 +52,7 @@ def checking():
 
     # first number handling 
     if not first_num or not first_num.isdigit():
-        print(f"{RED}Invalid bin input : must contain only digits")
+        print(f"{RED}Invalid bin input : must contain only digits or a path")
         return False
     
     elif not 6 <= len(first_num) <= 16 :
@@ -76,18 +77,18 @@ def checking():
         if len(bin_parts) == 4 and bin_parts[3] not in ["" , "xx" ,"xxx" , "xxxx"]:
             if not bin_parts[3].isdigit():
                 return False
+    return bin_parts
 
-# the function to return random digits
+# # the function to return random digits
 def shufling():
     return random.choice(sdigits)
 
 # function to return the first card number 
-def firts_num(bin_number : str) -> str :
+def first_num(bin_number : str) -> str :
     global UNWANTED_INPUTS
     if not bin_number:
-        UNWANTED_INPUTS += bin_number + "\n"
         return False
-    card_number = bin_number.split("|")[0]
+    card_number = bin_number.strip().split("|")[0]
     if not card_number.isdigit() and not 6 <= len(card_number) <= 16 or not card_number.startswith(tuple("4563")):
         UNWANTED_INPUTS += bin_number + "\n"
         print(f"{RED}Invalid Bin : out of range or wrong must start with 5-4-6-3")
@@ -98,6 +99,7 @@ def firts_num(bin_number : str) -> str :
     elif card_number.startswith("3") : 
         while len(card_number) < 14:
             card_number += shufling()
+
     # calculate checksum 
     total = 0
 
@@ -109,73 +111,63 @@ def firts_num(bin_number : str) -> str :
                 number = (number % 10) + 1
         total += number
     checksum = (10 - (total % 10)) % 10
+    return card_number + str(checksum)
 
-    print( card_number + str(checksum))
-def month_year(num):
-    full = num.split("|")
-    if len(full) == 4:
-        if full[1].startswith(DIGITS_TUBLE) and full[2].startswith(DIGITS_TUBLE):
-            month = full[1]
-            year = full[2]
-            if 0 < int(month) <= 12 :
-                return f"{month}|{year}"
-        elif full[1] == "xx" and full[2].startswith(DIGITS_TUBLE):
-                month = random.randint(1 ,12)
-                year = full[2]
-                if 0 < month < 10:
-                    month = "0" + str(month)
-                    if len(year) == 4:
+# handling month an year 
+def month_year(bin_number):
+    #handling with month
+    parts = bin_number.split("|")
+    bin_month = ""
+    bin_year = ""
+    if len(parts) < 2 or parts[1] in ["" , "xx"]:
 
-                        return f"{month}|{year}"
-                    else:
-                        return f"{month}|20{year}"
-                else: 
-                    if len(year) == 4:
-
-                        return f"{month}|{year}"
-                    else:
-                        return f"{month}|20{year}"
-                    
-        elif full[2] == "xx" and full[1].startswith(DIGITS_TUBLE):
-            year = random.randint(26 ,33)
-            month = full[1]
-            return f"{month}|20{year}"
-        elif full[1] == "xx" and  full[2] == "xx":
-            month = random.randint(1 ,12)
-            if 0 < month < 10:
-                month = "0" + str(month)
-
-                
-            else: 
-                month = month
-            year = random.randint(26 ,33)
-            return f"{month}|20{year}"
+            bin_month = f"{random.randint(1,12):02d}"
     else:
-        month = random.randint(1 ,12)
-        if 0 < month < 10:
-            month = f"0{month}"
-        year = random.randint(26 ,33)
-        return f"{month}|20{year}"
-def cvv(num):
-    cvv = num.split("|")
-    if len(cvv) == 4:
-        if cvv[3].startswith(tuple("0123456789")):
-            return cvv[3]
-        elif cvv[3] =="xxx":
-            cvc = ""
-            for _ in range(3):
-                cvc += shufling()
-            return cvc
-        elif cvv[3] =="xxxx":
-            cvc = ""
-            for _ in range(4):
-                cvc += shufling()
-            return cvc
+        month = parts[1]
+        if month.isdigit() :
+            month = int(month)
+            if 1 <= month <= 12:
+                bin_month = f"{month:02d}"
+        else:
+            bin_month = f"{random.randint(1,12):02d}"
+    
+    # handling with year
+    if len(parts) >= 3 and parts[2] not in ["" , "xx"]:
+        year = parts[2]
+        if year.isdigit():
+            if len(year) == 2:
+                year = f"20{year}"
+            elif len(year) == 4:
+                year = year
+            else:
+                bin_year = str(random.randint(CURRENT_YEAR, LEGAL_YEAR))
+        else: 
+            bin_year = str(random.randint(CURRENT_YEAR, LEGAL_YEAR))
     else:
-        cvv = ""
-        for _ in range(3):
-            cvv += shufling()
-        return cvv
+        bin_year = str(random.randint(CURRENT_YEAR, LEGAL_YEAR))
+
+    return f"{bin_month}|{bin_year}"
+
+def cvv(num:str) -> str:
+    parts = num.split("|")
+    if parts[0].startswith("3"):
+        cvv_length = 4
+    
+    else:       
+        cvv_length = 3
+    if len(parts) >= 4:
+        bin_cvv = ""
+        if parts[3] in ["x" , "xx" , "xxx" , "xxxx" ]:
+            bin_cvv = "".join(shufling() for _ in range(cvv_length))
+
+        elif parts[3].isdigit():
+            bin_cvv = parts[3]
+        else:
+            bin_cvv = "".join(shufling() for _ in range(cvv_length))
+    else:
+        bin_cvv = "".join(shufling() for _ in range(cvv_length))
+    return bin_cvv
+    
 
 def luhn_algo(number: str) -> bool:
     luhn_num = number.split("|")[0][::-1]
@@ -191,10 +183,10 @@ def luhn_algo(number: str) -> bool:
     return total % 10 == 0 
 
 # the main function
-def main(number):
+def main(number:str): #-path : list or single bin number
+    global UNWANTED_INPUTS
     filename = f"{datetime.now().strftime('%Y-%m-%d %H-%M-%S')} CCs.txt"
     generated = 0
-    max_attempts = 50  # Prevent infinite loops
     
     if number :
         amount = input("How many cards default 10 >> ").strip()
@@ -204,48 +196,75 @@ def main(number):
             amount = 10
  
         amount = int(amount)
-        # handling with list 
         with open(filename , "w") as file:
-            if type(number) == list :
+            # handling with list 
+            if isinstance(number , list) :
                 valid_bins = [] 
                 bin_list = number
                 for bin in bin_list:
-                    card_number = firts_num(bin)
+                    card_number = first_num(bin)
                     if card_number and luhn_algo(card_number):
-                        return
-                    
+                        valid_bins.append(bin)
+                if not valid_bins :
+                    print(f"{RED}No valid bin found in the file")
+                    return 
+                for i , bin in enumerate(valid_bins):
+                    while generated < amount:
+                        bin_number_parts = valid_bins[i]
 
-
-                
-
-
-            
-    else: 
-        return
-
-
-    
-    
-        
-   
-def keep_going():
-    func = main(checking())
-    if func == "write a correct number"  or func == "wrong input":
-        while True:
-            func: None | str = main(checking())
-    else:
-        while True:
-            answer = input("To keep generating 'yes' || to exit 'no' >> ").upper()
-            if answer == "YES":
-                main(checking())
-            elif answer == "NO":
-                print("\033[33m🔻Thank you for using our script :)")
-                break
+                        first_number = first_num(bin_number_parts)
+                        if first_number and luhn_algo(first_number):
+                            month_year_bin = month_year(bin_number_parts)
+                            cvc = cvv(bin_number_parts)
+                            
+                            format = f"{first_number}|{month_year_bin}|{cvc}"
+                            file.write(format+ "\n")
+                            print(f"{RED}{format}")
+                            generated  += 1
+                if UNWANTED_INPUTS:
+                    print(f"{RED}These are wrong inputs \n{UNWANTED_INPUTS}")
+                return "done"
+            # handling with signle bin
             else:
-                print("Write yes or no")
+                while generated < amount:
+                    bin_number_parts = number
+                    first_number = first_num(bin_number_parts)
+                    if first_number and luhn_algo(first_number):
+                        month_year_bin = month_year(bin_number_parts)
+                        cvc = cvv(bin_number_parts)
+                        
+                        format = f"{first_number}|{month_year_bin}|{cvc}"
+                        file.write(format+ "\n")
+                        print(f"{RED}{format}")
+                        generated  += 1
+                if UNWANTED_INPUTS:
+                    print(f"{RED}These are wrong inputs \n{UNWANTED_INPUTS}")
+                return "done"
+    else: 
+        return False
+
+def keep_going():
+    while True:
+        func = main(checking())
+        if func == "done":
+
+                answer = input("\n\nTo keep generating 'yes' || to exit 'no' >> ").upper()
+                if answer == "YES":
+                    continue
+
+                elif answer == "NO":
+                    print("\033[33m🔻Thank you for using our script :)")
+
+                    break
+                else:
+                    print("Write yes or no")
+
+        else:   
+                    continue
+
 
 if __name__ == "__main__":
     try : 
-        main(checking())
+        keep_going()
     except KeyboardInterrupt:
         print(f"{RED}\n\n🔴 Exiting...")
